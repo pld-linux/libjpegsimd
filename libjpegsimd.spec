@@ -17,11 +17,8 @@ Group:		Libraries
 Source0:	http://cetus.sakura.ne.jp/softlab/jpeg-x86simd/sources/jpegsrc-6b-x86simd-1.02.tar.bz2
 # Source0-md5:	520b8aaaaa8c22eb1f30cade836177ce
 URL:		http://cetus.sakura.ne.jp/softlab/jpeg-x86simd/jpegsimd.html
-Patch0:		libjpeg-DESTDIR.patch
-Patch1:		libjpeg-arm.patch
-Patch2:		libjpeg-include.patch
-Patch3:		libjpeg-c++.patch
-Patch4:		libjpeg-libtool.patch
+Patch0:		%{name}-asm.patch
+Patch1:		libjpeg-include.patch
 BuildRequires:	libtool
 BuildRequires:	nasm
 ExclusiveArch:	%{ix86}
@@ -174,11 +171,8 @@ Bibliotecas estáticas para desenvolvimento com libjpegsimd.
 
 %prep
 %setup  -q -n jpeg-%{libjpegsimdver}x
-#%patch0 -p1
-#%patch1 -p1
-%patch2 -p1
-#%patch3 -p1
-#%patch4 -p1
+%patch0 -p1
+%patch1 -p1
 
 cp -f %{_datadir}/libtool/config.sub .
 
@@ -194,23 +188,8 @@ LD_PRELOAD=$PWD/.libs/%{name}.so make test
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_libdir},%{_includedir},%{_bindir},%{_mandir}/man1}
 
-
-%{__make} install install-headers install-lib \
-	libdir=%{_libdir} \
-	DESTDIR=$RPM_BUILD_ROOT
-
-install jversion.h $RPM_BUILD_ROOT%{_includedir}
-
-# remove HAVE_STD{DEF,LIB}_H
-# (not necessary but may generate warnings confusing autoconf)
-(cd $RPM_BUILD_ROOT%{_includedir}
-grep -v 'HAVE_STD..._H' jconfig.h > jconfig.h.new
-mv -f jconfig.h.new jconfig.h
-)
-
-bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+%{makeinstall}
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -225,7 +204,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc {libjpegsimd,structure}.doc
+%doc {libjpeg,structure}.doc
 
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/lib*.la
@@ -235,8 +214,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/*
-%lang(fi) %{_mandir}/fi/man1/*
-%lang(pl) %{_mandir}/pl/man1/*
 
 %files static
 %defattr(644,root,root,755)
