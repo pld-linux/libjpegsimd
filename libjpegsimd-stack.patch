@@ -1,0 +1,24 @@
+--- jpeg-6bx/jsimdext.inc.orig	2006-02-03 18:20:00.000000000 +0100
++++ jpeg-6bx/jsimdext.inc	2008-01-27 14:12:02.062345668 +0100
+@@ -61,6 +61,10 @@
+ %define SEG_TEXT    .text   progbits alloc exec   nowrite align=16
+ %define SEG_CONST   .rodata progbits alloc noexec nowrite align=16
+ 
++%ifdef GNU_STACK
++	SECTION .note.GNU-stack noalloc noexec nowrite progbits
++%endif
++
+ ; To make the code position-independent, append -DPIC to the commandline
+ ;
+ %define GOT_SYMBOL  _GLOBAL_OFFSET_TABLE_	; ELF supports PIC
+--- jpeg-6bx/makefile.cfg.orig	2006-01-10 01:00:00.000000000 +0100
++++ jpeg-6bx/makefile.cfg	2008-01-27 14:13:05.989988697 +0100
+@@ -33,7 +33,7 @@
+ 
+ # The executable name of NASM and its options:
+ NASM= @NASM@
+-NAFLAGS= @NAFLAGS@ @INCLUDEFLAGS@
++NAFLAGS= @NAFLAGS@ @INCLUDEFLAGS@ -DGNU_STACK
+ 
+ # Link-time cc options:
+ LDFLAGS= @LDFLAGS@
