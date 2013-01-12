@@ -1,3 +1,4 @@
+# NOTE: JPEG SIMD code is now developed as part of libjpeg-turbo library
 Summary:	Library for handling different JPEG files - x86 SIMD version
 Summary(pl.UTF-8):	Biblioteka do manipulacji plikami w formacie JPEG - wersja x86 SIMD
 Name:		libjpegsimd
